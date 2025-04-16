@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+    sims_worker_x:
+      build:
+        context: .
+        dockerfile: ./worker.Dockerfile
+      hostname: $HOSTNAME
+      env_file:
+        - path: ./.env
+          required: true
+      environment:
+        - HTTP_PASSWORD=123456
+        - VNC_PASSWORD=123456
+        - SSL_PORT=443
+        - USER=root
+        - PASSWORD=123456
+        - RELATIVE_URL_ROOT=bot
+        - RESOLUTION=1920x1080
+        - ALSADEV=hw:2,0
+      ports:
+        - 6082:80
+        - 6083:443
+        - 5902:5900
+      volumes:
+        - ./sims_worker/dev/shm:/dev/shm
+        - ./sims_worker/ssl:/etc/nginx/ssl
+      # restart: always
+      user: root
+      # command: echo "test" > /root/Desktop/t.log
