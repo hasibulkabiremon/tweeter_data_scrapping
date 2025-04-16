@@ -1,0 +1,2 @@
+[console_scripts]
+get-chrome-driver = get_chrome_driver.app:app
