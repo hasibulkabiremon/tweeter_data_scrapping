@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from login import login
 from post_Link import search_and_get_post_link
 from post_item import PostItem
+import webbrowser
 
 def load_cookies(driver: webdriver.Chrome):
         cookies_path="x_cookies.pkl"
@@ -114,6 +115,190 @@ with open(output_file, "w", encoding="utf-8") as f:
     json.dump(results_dict, f, ensure_ascii=False, indent=4)
 
 print(f"Search results written to {output_file}")
+
+# Generate HTML results page
+html_file = "results.html"
+with open(html_file, "w", encoding="utf-8") as f:
+    f.write(f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Search Results for "{x_key}"</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 20px;
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }}
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(255,255,255,0.1);
+        }}
+        h1 {{
+            color: #1DA1F2;
+            text-align: center;
+            margin-bottom: 20px;
+        }}
+        .show-entries {{
+            margin-bottom: 20px;
+            color: #666;
+        }}
+        select {{
+            background: #1a1a1a;
+            color: #fff;
+            border: 1px solid #333;
+            padding: 5px;
+            border-radius: 4px;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }}
+        th, td {{
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #222;
+        }}
+        th {{
+            background-color: #000000;
+            color: #888;
+            font-weight: normal;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }}
+        tr:hover {{
+            background-color: #111111;
+        }}
+        .status {{
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+        }}
+        .status-scrapped {{
+            background-color: #1b4332;
+            color: #4ade80;
+        }}
+        .status-not-scrapped {{
+            background-color: #431b1b;
+            color: #f87171;
+        }}
+        a {{
+            color: #1DA1F2;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }}
+        a:hover {{
+            text-decoration: underline;
+        }}
+        .pagination {{
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }}
+        .pagination button {{
+            background: #1a1a1a;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+        }}
+        .pagination button.active {{
+            background: #1DA1F2;
+            border-color: #1DA1F2;
+        }}
+        .pagination button:hover {{
+            background: #222;
+        }}
+        .checkbox-column {{
+            width: 30px;
+        }}
+        input[type="checkbox"] {{
+            width: 16px;
+            height: 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+        }}
+        .showing-entries {{
+            color: #666;
+            margin-top: 20px;
+            text-align: left;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>X Search Results for "{x_key}"</h1>
+        <div class="show-entries">
+            Show 
+            <select>
+                <option>25</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+            items
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="checkbox-column"><input type="checkbox"></th>
+                    <th>Source</th>
+                    <th>Post Text</th>
+                    <th>Date</th>
+                    <th>URL</th>
+                    <th>Scrapped Status</th>
+                </tr>
+            </thead>
+            <tbody>
+''')
+
+    # Add each result as a table row
+    for post in results_dict:
+        f.write(f'''
+                <tr>
+                    <td class="checkbox-column"><input type="checkbox"></td>
+                    <td>{post['source_text']}</td>
+                    <td>{post['post_text']}</td>
+                    <td>{post['time_element']}</td>
+                    <td><a href="{post['post_link']}" target="_blank">View Post 🔗</a></td>
+                    <td><span class="status status-scrapped">Scrapped</span></td>
+                </tr>
+''')
+
+    f.write(f'''
+            </tbody>
+        </table>
+        <div class="showing-entries">
+            Showing 1 to {len(results_dict)} of {len(results_dict)} posts
+        </div>
+        <div class="pagination">
+            <button>Previous</button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button>Next</button>
+        </div>
+    </div>
+</body>
+</html>
+''')
+
+print(f"HTML results page generated at {html_file}")
+
+# Open the HTML file in the default browser
+webbrowser.open('file://' + os.path.abspath(html_file))
 
 # Print results to console
 for post in search_results:

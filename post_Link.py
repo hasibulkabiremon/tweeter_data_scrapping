@@ -35,7 +35,7 @@ def search_and_get_post_link(browser: webdriver.Chrome, topic, days_ago, loop_ra
     tw_post = browser.find_elements(
         By.XPATH, post_xpath
     )
-    for a in range(5):
+    for a in range(1):
         for l in tw_post:
             post_item = search_post_list(days_ago, l)
             if post_item:
