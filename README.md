@@ -2,6 +2,35 @@
 
 A Python-based bot that searches and collects posts from X (formerly Twitter) based on specific keywords and timeframes.
 
+## Workflow
+```mermaid
+flowchart TD
+    A[Start] --> B[Initialize Chrome Driver]
+    B --> C{Check Cookies}
+    C -->|Found| D[Load Cookies]
+    C -->|Not Found| E[Manual Login]
+    E --> F[Save Cookies]
+    D --> G[Navigate to X.com]
+    F --> G
+    G --> H[Enter Search Keyword]
+    H --> I[Scroll & Collect Posts]
+    I --> J{Check Post Date}
+    J -->|Within Range| K[Extract Post Data]
+    J -->|Too Old| L[Continue Scrolling]
+    L --> I
+    K --> M[Create PostItem Object]
+    M --> N[Add to Results List]
+    N --> O{More Posts?}
+    O -->|Yes| I
+    O -->|No| P[Remove Duplicates]
+    P --> Q[Generate Outputs]
+    Q --> R[Save JSON File]
+    Q --> S[Create HTML Page]
+    S --> T[Open in Browser]
+    R --> U[End]
+    T --> U
+```
+
 ## Screenshot
 ![X Search Results Interface](screenshot.png)
 
