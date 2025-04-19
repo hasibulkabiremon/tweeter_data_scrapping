@@ -2,12 +2,14 @@ from datetime import datetime, timedelta
 import os
 import pickle
 import time
+import json
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from get_chrome_driver import GetChromeDriver
 from selenium.webdriver.common.by import By
 from login import login
 from post_Link import search_and_get_post_link
+from post_item import PostItem
 
 def load_cookies(driver: webdriver.Chrome):
         cookies_path="x_cookies.pkl"
@@ -47,9 +49,9 @@ print(chrome_file_path)
 url = "https://x.com"
 
 
-days_ago = datetime.now() - timedelta(days=3)
+days_ago = datetime.now() - timedelta(days=7)
 scroll = 0
-x_key = "#Younus"
+x_key = "#বাংলাদেশ"
 
 try:
     browser =  webdriver.Chrome(service=service, options=option) # for docker developement
@@ -96,4 +98,23 @@ except Exception as e:
             input("Press Enter To Continue......")
         save_cookies(browser)
 
-search_and_get_post_link(browser, x_key, days_ago, scroll)
+search_results = search_and_get_post_link(browser, x_key, days_ago, scroll)
+
+# Convert PostItem objects to dictionaries
+results_dict = [{
+    "source_text": post.source_text,
+    "post_text": post.post_text,
+    "time_element": post.time_element,
+    "post_link": post.post_link
+} for post in search_results]
+
+# Write to JSON file
+output_file = "search_results.json"
+with open(output_file, "w", encoding="utf-8") as f:
+    json.dump(results_dict, f, ensure_ascii=False, indent=4)
+
+print(f"Search results written to {output_file}")
+
+# Print results to console
+for post in search_results:
+    print(str(post))

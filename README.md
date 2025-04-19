@@ -1,70 +1,124 @@
-# Tweeter Data Scrapping
+ # X (Twitter) Search Bot
 
-Tweeter Data Scrapping is a Python script that uses Selenium to scrape Twitter posts along with their comments, replies, and other reactions. This tool is designed to help you extract detailed information from Twitter for analysis and research purposes.
+A Python-based bot that searches and collects posts from X (formerly Twitter) based on specific keywords and timeframes.
 
 ## Features
 
-- **Scrape Twitter Posts**: Extracts detailed information from Twitter posts including text, media, and metadata.
-- **Comments and Replies**: Retrieves comments and replies associated with each post.
-- **Reactions**: Collects data on likes, retweets, and other reactions.
-- **Automation**: Uses Selenium to automate the browsing and data extraction process.
+- Automated X (Twitter) search and post collection
+- Duplicate post removal
+- JSON output of search results
+- Cookie-based authentication for persistent login
+- Automatic Chrome driver management
+- Configurable search parameters
 
 ## Requirements
 
 - Python 3.x
-- Selenium
-- WebDriver for your browser (e.g., ChromeDriver for Google Chrome)
+- Chrome browser
+- Required Python packages (install using `pip install -r requirements.txt`):
+  - selenium
+  - python-dotenv
+  - get-chrome-driver
 
-## Installation
+## Configuration
 
-1. **Clone the repository:**
-    ```bash
-    git clone https://github.com/hasibulkabiremon/tweeter_data_scrapping.git
-    cd tweeter_data_scrapping
-    ```
+1. Create a `.env` file in the project root with the following variables:
+```
+POST_XPATH=your_post_xpath
+POST_TEXT=your_post_text_xpath
+SOURCE_PATH=your_source_xpath
+LINK_XPATH=your_link_xpath
+```
 
-2. **Install the required packages:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+2. Update the search parameters in `main.py`:
+```python
+days_ago = datetime.now() - timedelta(days=7)  # Adjust time window
+x_key = "#বাংলাদেশ"  # Change search keyword
+```
 
-3. **Download the WebDriver:**
-   - For Chrome, download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) and place it in the same directory as your script or add it to your PATH.
+## How It Works
+
+1. **Authentication**:
+   - Uses cookie-based authentication
+   - Saves cookies after first login
+   - Reuses cookies for subsequent runs
+
+2. **Search Process**:
+   - Enters search keyword
+   - Scrolls through results
+   - Collects posts matching criteria
+   - Removes duplicates while preserving order
+
+3. **Post Collection**:
+   - Collects source text
+   - Collects post text
+   - Records post time
+   - Saves post link
+
+4. **Output**:
+   - Saves results to `search_results.json`
+   - Prints results to console
+   - Each post follows the format: `source_text _69_ post_text _69_ time_element _69_ post_link`
 
 ## Usage
 
-1. **Configure the script:**
-   - Update the `config.py` file with your Twitter login credentials and any other necessary configuration.
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
 
-2. **Run the script:**
-    ```bash
-    python scrape_twitter.py
-    ```
+2. Configure your `.env` file with appropriate XPath values
 
-3. **Output:**
-   - The script will generate a CSV file containing the scraped data.
+3. Run the script:
+```bash
+python main.py
+```
 
-## Example
+4. For first run, you may need to manually log in when prompted
 
-Here is a simple example of what the output might look like:
+## Output Format
 
-| Post ID | User | Text | Comments | Replies | Likes | Retweets |
-|---------|------|------|----------|---------|-------|----------|
-| 123456  | @user1 | This is a tweet | 5 | 3 | 100 | 50 |
+The script generates two types of output:
 
-## Contributing
+1. **Console Output**:
+   - Progress messages
+   - Number of posts found
+   - Number of unique posts after deduplication
+   - Individual post details
 
-Contributions are welcome! Please open an issue or submit a pull request if you have any improvements or bug fixes.
+2. **JSON File** (`search_results.json`):
+```json
+[
+    {
+        "source_text": "source text here",
+        "post_text": "post text here",
+        "time_element": "time here",
+        "post_link": "link here"
+    }
+]
+```
+
+## Notes
+
+- The script includes automatic Chrome driver management
+- Duplicate posts are removed based on exact content matching
+- The search window can be adjusted in the code
+- Make sure to respect X's terms of service and rate limits
+
+## Troubleshooting
+
+1. **Login Issues**:
+   - Clear cookies and try manual login
+   - Check if X has changed their login process
+
+2. **XPath Errors**:
+   - Update XPath values in `.env` file
+   - Check if X has updated their page structure
+
+3. **Chrome Driver Issues**:
+   - The script will attempt to download the correct driver version
+   - Make sure Chrome is installed and up to date
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## Connect with me
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/mdhasibul923853191) 
-[![Twitter](https://img.shields.io/badge/Twitter-Profile-blue?style=flat-square&logo=twitter)](https://twitter.com/@hasib_kabi_emon) 
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-black?style=flat-square&logo=github)](https://github.com/hasibulkabiremon) 
-[![Facebook](https://img.shields.io/badge/Facebook-Profile-blue?style=flat-square&logo=facebook)](https://facebook.com/hasibulc0) 
-
-Feel free to check out my other projects [here](https://github.com/hasibulkabiremon?tab=repositories).
+This project is licensed under the MIT License - see the LICENSE file for details.

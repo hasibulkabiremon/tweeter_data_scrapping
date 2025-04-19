@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 import time
 from timechange import timeChange
 from selenium import webdriver
+from post_item import PostItem
 
 from dotenv import load_dotenv
 
@@ -17,7 +18,7 @@ link_path = os.getenv("LINK_XPATH")
 
 h_secret = " _69_ "
 
-def search_and_get_post_link(browser: webdriver.Chrome, topic,days_ago,loop_range=1):
+def search_and_get_post_link(browser: webdriver.Chrome, topic, days_ago, loop_range=1):
     link_post = []
     elem = browser.find_element(By.CSS_SELECTOR, ".r-30o5oe")
     elem.click()
@@ -34,54 +35,61 @@ def search_and_get_post_link(browser: webdriver.Chrome, topic,days_ago,loop_rang
     tw_post = browser.find_elements(
         By.XPATH, post_xpath
     )
-    # link_post += [l.get_attribute("href") for l in tw_post]
     for a in range(5):
         for l in tw_post:
-            search_post_list(days_ago, link_post, l)
+            post_item = search_post_list(days_ago, l)
+            if post_item:
+                link_post.append(post_item)
 
         browser.execute_script("window.scrollTo(0,window.scrollY+4000)")
         time.sleep(5)
 
         tw_post = browser.find_elements(By.XPATH, post_xpath)
 
+    # Remove duplicates while preserving order
+    # Create a set to track seen posts
+    seen_posts = set()
+    # Create a new list for unique posts
+    unique_posts = []
+    
+    # Iterate through all posts
+    for post in link_post:
+        # Convert post to string representation for comparison
+        post_str = str(post)
+        # If we haven't seen this post before
+        if post_str not in seen_posts:
+            # Add to seen posts
+            seen_posts.add(post_str)
+            # Add to unique posts list
+            unique_posts.append(post)
+    
+    print(f"Found {len(link_post)} total posts")
+    print(f"After removing duplicates: {len(unique_posts)} unique posts")
+    
+    return unique_posts
 
-
-    link_post = list(dict.fromkeys(link_post))
-
-    print(len(link_post))
-    [print(l) for l in link_post]
-    # print("Key:")
-    return link_post
-
-def search_post_list(days_ago, link_post, l):
+def search_post_list(days_ago, l):
     try:
-        time_element = timeChange(l.find_element(By.XPATH, ".//time").get_attribute("datetime")) #Post Time
+        time_element = timeChange(l.find_element(By.XPATH, ".//time").get_attribute("datetime"))
     except Exception as e:
         print(e)
+        return None
         
-    if datetime.strptime(time_element,"%Y-%m-%d %H:%M:%S") > days_ago:
-        link_post.append(l.get_attribute("href"))
-        print("Link Appended.")
-    else:
-        print(datetime.strptime(time_element,"%Y-%m-%d %H:%M:%S") > days_ago)
-        
-    try:
-        post_text = l.find_element(By.XPATH,post_text_xpath).text
-        print(post_text)
-    except:
-        print("Couldn't Scrap Post Text")
-
-    try:
-        source_text = l.find_element(By.XPATH,source_path).text
-        print(source_text)
-    except Exception as e:
-        print("Couldn't Scrap Source Text:", e)
-
-    try:
-        post_link = l.find_element(By.XPATH,link_path).get_attribute("href")
-        print(post_link)
-    except Exception as e:
-        print("Couldn't Scrap Post Link:", e)
-        
-    link_post.append(source_text+ h_secret + post_text + h_secret + time_element + h_secret + post_link)
+    # if datetime.strptime(time_element,"%Y-%m-%d %H:%M:%S") > days_ago:
+    if True:
+        try:
+            post_text = l.find_element(By.XPATH, post_text_xpath).text
+            source_text = l.find_element(By.XPATH, source_path).text
+            post_link = l.find_element(By.XPATH, link_path).get_attribute("href")
+            
+            return PostItem(
+                source_text=source_text,
+                post_text=post_text,
+                time_element=time_element,
+                post_link=post_link
+            )
+        except Exception as e:
+            print(f"Error scraping post data: {e}")
+            return None
+    return None
 
