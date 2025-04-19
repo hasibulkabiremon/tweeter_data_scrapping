@@ -1,6 +1,18 @@
- # X (Twitter) Search Bot
+# X (Twitter) Search Bot
 
 A Python-based bot that searches and collects posts from X (formerly Twitter) based on specific keywords and timeframes.
+
+## Screenshot
+![X Search Results Interface](screenshot.png)
+
+The interface provides:
+- Dark mode UI
+- Searchable and filterable results
+- Pagination controls
+- Status indicators for scrapped content
+- Direct links to original posts
+- Bulk selection capabilities
+- Adjustable items per page
 
 ## Features
 
@@ -10,6 +22,8 @@ A Python-based bot that searches and collects posts from X (formerly Twitter) ba
 - Cookie-based authentication for persistent login
 - Automatic Chrome driver management
 - Configurable search parameters
+- Modern dark-themed UI for viewing results
+- Pagination and filtering options
 
 ## Requirements
 
@@ -57,6 +71,7 @@ x_key = "#বাংলাদেশ"  # Change search keyword
 
 4. **Output**:
    - Saves results to `search_results.json`
+   - Generates interactive HTML results page
    - Prints results to console
    - Each post follows the format: `source_text _69_ post_text _69_ time_element _69_ post_link`
 
@@ -80,11 +95,12 @@ python main.py
 
 The script generates two types of output:
 
-1. **Console Output**:
-   - Progress messages
-   - Number of posts found
-   - Number of unique posts after deduplication
-   - Individual post details
+1. **Interactive HTML Page**:
+   - Dark-themed modern interface
+   - Sortable and filterable results
+   - Pagination controls
+   - Status indicators
+   - Direct links to posts
 
 2. **JSON File** (`search_results.json`):
 ```json
