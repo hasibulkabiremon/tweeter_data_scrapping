@@ -1,0 +1,17 @@
+# Core dependencies
+selenium>=4.15.2
+python-dotenv>=1.0.0
+get-chrome-driver>=1.3.3
+
+# Browser automation
+webdriver-manager>=4.0.1
+
+# Date/Time handling
+pytz>=2023.3
+
+# File handling
+requests>=2.31.0
+
+# Optional but recommended
+tqdm>=4.66.1  # For progress bars
+colorama>=0.4.6  # For colored terminal output 
