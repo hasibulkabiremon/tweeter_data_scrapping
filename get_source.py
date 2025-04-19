@@ -15,7 +15,7 @@ def responseOb():
 
     # Make the GET request
     try:
-        response = requests.post(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=params)
         response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
         
         # Print the JSON response

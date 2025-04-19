@@ -21,6 +21,7 @@ from class_Tweet import (
     Topic,
     Tweet,
 )
+from cookies import load_cookies, save_cookies
 from get_source import responseOb
 from login import login, logout
 from parse_number import parse_number_with_suffix, timedelta_to_str
@@ -541,6 +542,8 @@ while True:
         print("Couldn't refress: ",e)
 
     try:
+        load_cookies(browser)
+        time.sleep(5)
         browser.find_element(
             By.XPATH, '//*[@id="react-root"]//header'
         )
@@ -561,6 +564,8 @@ while True:
             print("Error Log In: ", e)
             print("Log In Failed! Manually Log In ....")
             input("Press Enter To Continue......")
+        finally:
+            save_cookies(browser)
 
     for x_source in source_obj.data.sources:
         print(x_source.url)
@@ -618,7 +623,7 @@ while True:
                     print(e)
                     print("Couldn't Scrap Post!")
                     continue
-                """
+                
                 try:
                     dict_list = [obj.__dict__ for obj in json_list]
                     # print(dict_list)
@@ -631,12 +636,12 @@ while True:
                     "tweet.json", "w", encoding="utf-8", errors="ignore"
                 ) as json_file:
                     json_file.write(json_data)
-                """
+                
 
             except:
                 continue
 
-        """
+        
         try:
             dict_list = [obj.__dict__ for obj in json_list]
         except:
@@ -664,7 +669,7 @@ while True:
         with open("tweet.json", "r", encoding="utf-8", errors="ignore") as file:
             # Load the JSON data
             data = json.load(file)
-        """
+        
     # time.sleep(86400)
     # Path to the JSON file
     # file_path = "source.json"

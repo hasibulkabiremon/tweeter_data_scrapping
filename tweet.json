@@ -1,0 +1,82 @@
+[
+    {
+        "type": "page",
+        "source": "Jamuna Television",
+        "post_url": "https://x.com/JamunaTV/status/1912859381382959376",
+        "post_title": null,
+        "post_url_web": null,
+        "url_screenshot": "https://pbs.twimg.com/media/GovXdf7aYAAx7OR?format=jpg&name=small",
+        "posted_at": "2025-04-17 19:23:10",
+        "post_text": "https://jamuna.tv/news/606326",
+        "post_topic": {
+            "status": "",
+            "topic": {
+                "label": "",
+                "score": ""
+            }
+        },
+        "comments": [],
+        "reactions": {
+            "Total": 1,
+            "Sad": null,
+            "Love": 1,
+            "Wow": null,
+            "Like": null,
+            "Haha": null,
+            "Angry": null,
+            "Care": null
+        },
+        "featured_image": [],
+        "total_comments": 0,
+        "percent_comments": null,
+        "total_shares": null,
+        "vitality_score": null,
+        "checksum": "82326ba71d30dabec7d9ce4b5add3708",
+        "total_views": null,
+        "source_img": "https://pbs.twimg.com/media/GovXdf7aYAAx7OR?format=jpg&name=small",
+        "scraping_duration": "0000-00-00 00:00:19",
+        "scraped_at": "2025-04-17 19:25:06",
+        "device": "192.168.200.61",
+        "source_id": 88
+    },
+    {
+        "type": "page",
+        "source": "Jamuna Television",
+        "post_url": "https://x.com/JamunaTV/status/1912856808794063177",
+        "post_title": null,
+        "post_url_web": null,
+        "url_screenshot": "https://pbs.twimg.com/media/GovVHnjbMAAltWt?format=jpg&name=small",
+        "posted_at": "2025-04-17 19:12:57",
+        "post_text": "",
+        "post_topic": {
+            "status": "",
+            "topic": {
+                "label": "",
+                "score": ""
+            }
+        },
+        "comments": [],
+        "reactions": {
+            "Total": 8,
+            "Sad": null,
+            "Love": 8,
+            "Wow": null,
+            "Like": null,
+            "Haha": null,
+            "Angry": null,
+            "Care": null
+        },
+        "featured_image": [],
+        "total_comments": 0,
+        "percent_comments": null,
+        "total_shares": null,
+        "vitality_score": null,
+        "checksum": "5d4f2517da2fb7c693d0a56c58a8daf1",
+        "total_views": null,
+        "source_img": "https://pbs.twimg.com/media/GovVHnjbMAAltWt?format=jpg&name=small",
+        "scraping_duration": "0000-00-00 00:00:23",
+        "scraped_at": "2025-04-17 19:28:11",
+        "device": "192.168.200.61",
+        "source_id": 88
+    }
+]
