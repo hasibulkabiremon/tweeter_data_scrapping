@@ -1,14 +1,13 @@
-<<<<<<< HEAD
 import os
 from get_chrome_driver import GetChromeDriver
-=======
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
+
 from selenium import webdriver
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 import json
-<<<<<<< HEAD
+
 from datetime import datetime, timedelta
 import requests
 from selenium.webdriver.chrome.options import Options
@@ -36,7 +35,7 @@ from checksum import generate_checksum
 
 # keyWord = input("Enter Key for Search:")
 
-=======
+
 from datetime import datetime
 import pytz
 import requests
@@ -330,7 +329,7 @@ def id_and_get_post_link(browser, link):
     # input("ID:")
     return link_post
 
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
 
 def clickshowmore():
     # try:
@@ -349,11 +348,11 @@ def clickshowmore():
             "//button//span[contains(text(), 'Show')]",
         ).click()
         browser.execute_script("window.scrollTo(0,window.scrollY+800)")
-<<<<<<< HEAD
+
         # print("Click Show")
-=======
+
         print("Click Show")
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
         time.sleep(1)
         return
     except:
@@ -374,7 +373,7 @@ def clickshowmore():
     # time.sleep(2)
 
 
-<<<<<<< HEAD
+
 def post_scrap(post_url, sourceobj: Source, browser):
     current_datetime = datetime.now()
     featured_Images = []
@@ -400,7 +399,7 @@ def post_scrap(post_url, sourceobj: Source, browser):
     except:
         source = None
         # print("Source except:", post_source)
-=======
+
 def post_scrap(post_url, browser):
     browser.get(post_url)
     time.sleep(1)
@@ -414,18 +413,15 @@ def post_scrap(post_url, browser):
     except:
         source = None
         print("Source except:", source)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
     try:
         posted_text = browser.find_element(
             By.XPATH,
             "//div[@class='css-175oi2r']/div[@class='css-175oi2r r-1s2bzr4']/div",
         ).text
-<<<<<<< HEAD
+
         # print("Posted Text try:", posted_text)
-    except:
-        posted_text = ""
-        # print("Posted Text except:", posted_text)
-=======
+
         print("Posted Text try:", posted_text)
     except:
         posted_text = ""
@@ -437,7 +433,7 @@ def post_scrap(post_url, browser):
     except:
         posted_at = ""
         print("Posted At except:", posted_at)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
 
     post_url_web = None
 
@@ -453,17 +449,15 @@ def post_scrap(post_url, browser):
             "//div[@data-testid='cellInnerDiv'][1]//div[@class='css-175oi2r r-18u37iz r-1h0z5md r-13awgt0'][3]//span[@class='css-1jxf684 r-1ttztb7 r-qvutc0 r-poiln3 r-n6v787 r-1cwl3u0 r-1k6nrdp r-n7gxbd']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
         ).text
         Love = int(Love_str)
-<<<<<<< HEAD
+
         # print("Love try:", Love)
     except:
         Love = None
         # print("Love except:", Love)
-=======
+
         print("Love try:", Love)
-    except:
-        Love = None
-        print("Love except:", Love)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
+
     Wow = None
     Like = None
     Haha = None
@@ -479,11 +473,11 @@ def post_scrap(post_url, browser):
             By.XPATH,
             "//div[@data-testid='cellInnerDiv'][1]//div[@class='css-175oi2r r-18u37iz r-1h0z5md r-13awgt0'][1]//span[@class='css-1jxf684 r-1ttztb7 r-qvutc0 r-poiln3 r-n6v787 r-1cwl3u0 r-1k6nrdp r-n7gxbd']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
         ).text
-<<<<<<< HEAD
+
         # print("Total Comments try:", total_comments)
-=======
+
         print("Total Comments try:", total_comments)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
 
     except:
         total_comments = "0"
@@ -500,11 +494,11 @@ def post_scrap(post_url, browser):
         ).text
 
         total_shares = int(total_shares_text)
-<<<<<<< HEAD
+
         # print("Total Shares try:", total_shares)
-=======
+
         print("Total Shares try:", total_shares)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
     except:
         total_shares = None
         print("Total Shares except:", total_shares)
@@ -516,7 +510,7 @@ def post_scrap(post_url, browser):
         # time.sleep(10)
         url_screenshot = browser.find_element(
             By.XPATH,
-<<<<<<< HEAD
+
             "(//div[@data-testid='cellInnerDiv'][1]//article//div//img[@draggable='true'])[2]",
         ).get_attribute("src")
         # print("URL SS try:", url_screenshot)
@@ -539,7 +533,10 @@ def post_scrap(post_url, browser):
         featured_Images = None
         print("URL SS Error:", e)
         # print("URL SS except:", featured_Images)
-=======
+
+    try:
+        url_screenshot = browser.find_element(
+            By.XPATH,
             "//div[@data-testid='cellInnerDiv'][1]//div[@aria-label]//img",
         ).get_attribute("src")
         print("URL SS try:", url_screenshot)
@@ -548,7 +545,7 @@ def post_scrap(post_url, browser):
         print("URL SS Error:",e)
         print("URL SS except:", url_screenshot)
     
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
 
     try:
         #     comment = browser.find_elements(
@@ -562,10 +559,10 @@ def post_scrap(post_url, browser):
     except:
         comment = []
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
+
+
     for x in range(0, int(total_comments), 4):
         clickshowmore()
         try:
@@ -573,11 +570,11 @@ def post_scrap(post_url, browser):
             # browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(1)
         except Exception as e:
-<<<<<<< HEAD
+
             print("Exception:Couldn't Scroll!:", e)
-=======
+
             print("Exception:Couldn't Scroll!:",e)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
             browser.execute_script("window.scrollTo(0,window.scrollY-400)")
             # time.sleep(2)
         try:
@@ -602,38 +599,22 @@ def post_scrap(post_url, browser):
     #     comment_link = comment_link[:20]
     try:
         for cm in comment_link:
-<<<<<<< HEAD
             if "x.com" not in cm:
                 continue
-            # print(comments)
             try:
                 browser.get(cm)
                 time.sleep(1)
-=======
-            # print(comments)
-            try:
-                browser.get(cm)
-                time.sleep(3)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
             except:
                 comment_text = "Comment Unavailable"
 
             try:
                 user_name = browser.find_element(
                     By.XPATH,
-<<<<<<< HEAD
                     "//div[@data-testid='cellInnerDiv'][2]//span[@class='css-1jxf684 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
                 ).text
-                # print("User Name try:", user_name)
-=======
-                    "//div[@data-testid='cellInnerDiv'][2]//span[@class='css-1jxf684 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
-                ).text
-                print("User Name try:", user_name)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
             except:
                 print("User Not Found!.")
                 continue
-                # user_name = "Not Found"
 
             try:
                 user_pro_pic = browser.find_element(
@@ -645,28 +626,20 @@ def post_scrap(post_url, browser):
                 user_pro_pic = None
 
             try:
-
                 user_profile_url = browser.find_element(
                     By.XPATH,
                     "(//*/a[@class='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1loqt21'])[3]",
                 ).get_attribute("href")
-                # user_pro_pic = user_profile_url + "/photo"
             except:
-                user_profile_url = "Not  Found"
+                user_profile_url = "Not Found"
                 user_pro_pic = None
 
             try:
                 comment_text = browser.find_element(
                     By.XPATH, "//*/div[@class='css-175oi2r r-1s2bzr4']/div"
                 ).text
-<<<<<<< HEAD
-                # print("Comment Text try:", comment_text)
-=======
-                print("Comment Text try:", comment_text)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
             except:
                 comment_text = ""
-                print("Comment Text except:", comment_text)
 
             try:
                 comment_time = timeChange(
@@ -682,24 +655,11 @@ def post_scrap(post_url, browser):
                     By.XPATH,
                     "//div[@data-testid='cellInnerDiv'][2]//div[@class='css-175oi2r r-18u37iz r-1h0z5md r-13awgt0'][1]//span[@class='css-1jxf684 r-1ttztb7 r-qvutc0 r-poiln3 r-n6v787 r-1cwl3u0 r-1k6nrdp r-n7gxbd']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
                 ).text
-<<<<<<< HEAD
-
-                # print("Reply Try: ", no_com_rep)
             except:
                 no_com_rep = 0
-                print("Reply Except: ", no_com_rep)
 
-=======
-                
-                print("Reply Try: ", no_com_rep)
-            except:
-                no_com_rep = 0
-                print("Reply Except: ", no_com_rep)
-            
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
             comments_replies_list = []
 
-            print("Reply:", no_com_rep)
             if int(no_com_rep) > 0:
                 clickshowmore()
                 rep_list = browser.find_elements(
@@ -707,43 +667,24 @@ def post_scrap(post_url, browser):
                     "//div[@class='css-175oi2r' and @data-testid='cellInnerDiv']",
                 )
 
-<<<<<<< HEAD
-                # print(len(rep_list))
-
-=======
-                print(len(rep_list))
-
-                
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
                 try:
                     clickshowmore()
                     time.sleep(1)
                     for repl in range(len(rep_list) - 3):
-                        # print(repl)
                         ixp = (
                             "//div[@class='css-175oi2r' and @data-testid='cellInnerDiv']"
                             + "["
                             + str(repl + 4)
                             + "]"
                         )
-                        # print(ixp)
                         try:
                             rep_user_name = browser.find_element(
                                 By.XPATH,
                                 ixp
-<<<<<<< HEAD
                                 + "//span[contains(@class, 'css-1jxf684') and contains(@class, 'r-dnmrzs') and contains(@class, 'r-1udh08x') and contains(@class, 'r-1udbk01') and contains(@class, 'r-3s2u2q') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3')]/span[contains(@class, 'css-1jxf684') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3')]",
                             ).text
-                            # print(rep_user_name)
-=======
-                                + "//span[@class='css-1jxf684 r-dnmrzs r-1udh08x r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']",
-                            ).text
-                            print(rep_user_name)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
                         except Exception as err:
                             continue
-                            rep_user_name = "Not Found"
-                            print(err)
 
                         try:
                             rep_user_pro_pic = browser.find_element(
@@ -753,37 +694,24 @@ def post_scrap(post_url, browser):
                             rep_user_pro_pic = user_pro_pic.replace("_bigger", "")
                         except Exception as err:
                             rep_user_pro_pic = None
-                            print(err)
 
                         try:
-
                             rep_user_profile_url = browser.find_element(
                                 By.XPATH,
                                 ixp
                                 + "//a[@class='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1loqt21']",
                             ).get_attribute("href")
-                            # user_pro_pic = user_profile_url + "/photo"
                         except Exception as err:
-                            rep_user_profile_url = "Not  Found"
-                            print(err)
+                            rep_user_profile_url = "Not Found"
 
                         try:
                             rep_comment_text = browser.find_element(
                                 By.XPATH,
                                 ixp
-<<<<<<< HEAD
                                 + "//div[contains(@class, 'css-146c3p1') and contains(@class, 'r-8akbws') and contains(@class, 'r-krxsd3') and contains(@class, 'r-dnmrzs') and contains(@class, 'r-1udh08x') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-37j5jr') and contains(@class, 'r-a023e6') and contains(@class, 'r-rjixqe') and contains(@class, 'r-16dba41') and contains(@class, 'r-bnwqim')]",
                             ).text
                         except Exception as err:
                             rep_comment_text = ""
-                            print('rep_comment_text_Error:',err)
-=======
-                                + "//div[@class='css-175oi2r']/div[@class='css-146c3p1 r-8akbws r-krxsd3 r-dnmrzs r-1udh08x r-bcqeeo r-1ttztb7 r-qvutc0 r-37j5jr r-a023e6 r-rjixqe r-16dba41 r-bnwqim']",
-                            ).text
-                        except Exception as err:
-                            rep_comment_text = ""
-                            print(err)
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
 
                         try:
                             rep_comment_time = timeChange(
@@ -793,7 +721,6 @@ def post_scrap(post_url, browser):
                             )
                         except Exception as err:
                             rep_comment_time = None
-                            print(err)
 
                         comments_replies_list.append(
                             Comment(
@@ -806,7 +733,6 @@ def post_scrap(post_url, browser):
                             ).__dict__
                         )
                 except Exception as err:
-                    print(err)
                     None
 
             commnt = Comment(
@@ -817,22 +743,13 @@ def post_scrap(post_url, browser):
                 comment_text,
                 comments_replies_list,
             )
-            # print(commnt)
             comments.append(commnt)
-            # browser.back()
-            # time.sleep(1)
-            print(len(comments))
-            # print(comments)
     except Exception as e:
         print("Comment link exception:", e)
-    # login(browser)
-
-    # browser.back()
 
     d = ""
 
     id = ID(d)
-    # posted_at = PostedAt(posted_at)
     posted_at = timeChange(posted_at)
 
     label = ""
@@ -842,28 +759,26 @@ def post_scrap(post_url, browser):
     status = ""
     post_topic = PostTopic(status, topic)
 
-<<<<<<< HEAD
     reactions = Reactions(Love, Sad, Love, Wow, Like, Haha, Angry, Care)
 
     return Tweet(
-        # id,
-        type = sourceobj.type,
-        source =post_source,
-        post_url = post_url,
-        post_title = None,
-        post_url_web = post_url_web,
-        url_screenshot = url_screenshot,
-        posted_at =posted_at,
-        post_text = posted_text,
-        post_topic =post_topic,
-        comments = comments,
-        reactions = reactions,
-        featured_image = featured_Images,
-        total_comments = total_comments,
-        percent_comments = None,
-        total_shares = total_shares,
-        vitality_score = None,
-        checksum = generate_checksum(post_url),
+        type=sourceobj.type,
+        source=post_source,
+        post_url=post_url,
+        post_title=None,
+        post_url_web=post_url_web,
+        url_screenshot=url_screenshot,
+        posted_at=posted_at,
+        post_text=posted_text,
+        post_topic=post_topic,
+        comments=comments,
+        reactions=reactions,
+        featured_image=featured_Images,
+        total_comments=total_comments,
+        percent_comments=None,
+        total_shares=total_shares,
+        vitality_score=None,
+        checksum=generate_checksum(post_url),
         source_img=url_screenshot,
         device=source_obj.data.device,
         source_id=sourceobj.id,
@@ -1095,11 +1010,10 @@ while True:
     #     print(f"Dictionary has been written to {file_path}.")
     # except Exception as e:
     #     print(f"An error occurred: {e}")
-=======
+
     reactions = Reactions(Total, Sad, Love, Wow, Like, Haha, Angry, Care)
 
     return Tweet(
-        # id,
         None,
         source,
         post_url,
@@ -1317,4 +1231,4 @@ for xlink in tlink:
     #     browser.quit()
     # except:
     #     None
->>>>>>> 4ff233d76072078b352d2111116c9c4b91cb5cd7
+
