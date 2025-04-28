@@ -1,3 +1,5 @@
 selenium
 requests
 pytz
+python-dotenv
+webdriver-manager

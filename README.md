@@ -2,7 +2,7 @@
 
 This project is a Twitter scraper that uses Selenium to extract data from Twitter posts, including post details, comments, and reactions.
 
-## Main Script: `twiter.py`
+## Main Script: `main.py`
 
 ### Flowchart
 
@@ -27,13 +27,20 @@ graph TD;
 ### Usage
 
 1. Ensure you have Selenium installed and configured with the appropriate WebDriver.
-2. Run the `twiter.py` script to start scraping.
+2. Run the `main.py` script to start scraping.
 
-### Requirements
+### Updated Requirements
 
 - Python 3.x
 - Selenium
 - Chrome WebDriver
+- python-dotenv
+- webdriver-manager
+
+### Additional Information
+
+- The script now includes functionality to save and load cookies for session management.
+- Ensure that the `.env` file is configured correctly for environment variables used in the script.
 
 ### Notes
 
