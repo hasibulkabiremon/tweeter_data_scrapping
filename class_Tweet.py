@@ -1,3 +1,11 @@
+import json
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, '__dict__'):
+            return obj.__dict__
+        return str(obj)
+
 class Tweet:
     def __init__(
         self,
@@ -29,18 +37,18 @@ class Tweet:
         self.url_screenshot = url_screenshot
         self.posted_at = posted_at
         self.post_text = post_text
-        self.post_topic = post_topic.__dict__
-        self.comments = []
-        for comment in comments:
-            if comment is not None:
-                self.comments.append(comment.__dict__)
-        self.reactions = reactions.__dict__
+        self.post_topic = post_topic
+        self.comments = comments
+        self.reactions = reactions
         self.featured_image = featured_image
         self.total_comments = total_comments
         self.percent_comments = percent_comments
         self.total_shares = total_shares
         self.vitality_score = vitality_score
         self.checksum = checksum
+
+    def to_json(self):
+        return json.dumps(self, cls=CustomJSONEncoder, ensure_ascii=False, indent=4)
 
 
 class ID:
@@ -62,7 +70,7 @@ class Topic:
 class PostTopic:
     def __init__(self, status, topic):
         self.status = status
-        self.topic = topic.__dict__
+        self.topic = topic
 
 
 class Comment:
@@ -80,7 +88,7 @@ class Comment:
         self.user_name = user_name
         self.user_profile_url = user_profile_url
         self.comment_text = comment_text
-        self.comment_replies = comments_replies_list
+        self.comments_replies_list = comments_replies_list
 
 
 class Reactions:

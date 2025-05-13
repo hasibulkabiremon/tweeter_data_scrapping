@@ -1,4 +1,5 @@
 # Import necessary libraries
+import asyncio
 import os
 import pickle
 from selenium import webdriver
@@ -34,22 +35,24 @@ def save_cookies(driver):
 
 def click_show_more(browser):
     """Click the 'Show more' button if available and scroll down."""
-    
     try:
-        browser.find_element(By.XPATH, "//button//span[contains(text(), 'Show')]").click()
+        show_more_button = browser.find_element(By.XPATH, "//button//span[contains(text(), 'Show')]")
+        show_more_button.click()
         print("Clicked 'Show more'")
-    
     except Exception as e:
-        # print(f"Show more button not found: {e}")
+        # Check if we're inside a try-except block
         pass
-    
+
 
 def post_scrap(post_url, browser):
     """Scrape post details from the given URL using the provided browser instance."""
     featured_images = []
     browser.get(post_url)
-    time.sleep(3)
+    
 
+    loading_checker(browser)
+            
+ 
     # Extract post details
     try:
         posted_at = browser.find_element(By.XPATH, "//time").get_attribute("datetime")
@@ -152,30 +155,88 @@ def post_scrap(post_url, browser):
 
 def extract_comments(browser,comments_for_scrap,total_comments):
 
-    for _ in range(0, int(total_comments), 30):
-        browser.implicitly_wait(0)
-        browser.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-        time.sleep(1)
-        click_show_more(browser)
+    visited_reply_links = []
+    break_d = 0
+    last_height = browser.execute_script("return document.body.scrollHeight")
+    print('last_height:',last_height)
+    for _ in range(0, int(total_comments)):
+        loading_checker(browser)
+        browser.implicitly_wait(.5)
         comment_elements = browser.find_elements(By.XPATH, os.getenv('COMMENT_PATH'))
-        
-        
-        for comment in comment_elements:
-            try:
-                user_name = comment.find_element(By.XPATH, os.getenv('USER_NAME_PATH')).text
+        comment_data_taker(browser ,comments_for_scrap, comment_elements,visited_reply_links)
+        click_show_more(browser)
+        if 'comment_elements' in locals():
+            if len(comment_elements) > 0:
+                browser.execute_script("arguments[0].scrollIntoView(true);", comment_elements[-1])
+
+                if last_height == browser.execute_script("return document.body.scrollHeight"):
+                    print('No more comments to scroll through.')
+                    break_d += 1
+                else:
+                    print("last_height-Before:",last_height)
+                    last_height = browser.execute_script("return document.body.scrollHeight")
+                    print("last_height-After:",last_height)
+            
+            else:
+                break_d += 1
+                print('No comment elements found')
+        else:
+            print('comment_elements is not defined')
+        if 'break_d' in locals() and break_d > 5:
+            break
+    browser.implicitly_wait(.5)
+    # unique_comments = []
+    # seen = set()
+    # for comment in comments_for_scrap:
+    #     comment_data = (comment.user_pro_pic, comment.comment_time, comment.user_name, comment.user_profile_url, comment.comment_text)
+    #     if comment_data not in seen:
+    #         unique_comments.append(comment)
+    #         seen.add(comment_data)
+    return comments_for_scrap
+
+def loading_checker(browser):
+    while True:
+            # Check for circular progress indicator
+        try:
+            print('loading_checker looking for progress_indicator')
+            progress_indicator = browser.find_element(By.XPATH, os.getenv('PROGRESS_INDICATOR_PATH')).get_attribute("aria-label")
+            print('---------------------------------progress_indicator:',progress_indicator)
+            time.sleep(2)
+        except:
+            print('loading_checker progress_indicator not found')
+            break
+
+
+def comment_data_taker(browser, comments_for_scrap, comment_elements,visited_reply_links):
+    
+    for comment in comment_elements:
+        try:
+            reply_link = comment.find_element(By.XPATH, os.getenv('REPLY_LINK_PATH')).get_attribute("href")
+        except:
+            continue
+        print('reply_link',reply_link)
+        if reply_link in visited_reply_links:
+            print('Already visited reply link:',reply_link)
+            continue
+        visited_reply_links.append(reply_link)
+
+
+
+        try:
+            user_name = comment.find_element(By.XPATH, os.getenv('USER_NAME_PATH')).text
                 # print('user_name:',user_name)
-                user_pro_pic = comment.find_element(By.XPATH, os.getenv('USER_PRO_PIC_PATH')).get_attribute("src").replace("_bigger", "")
+            user_pro_pic = comment.find_element(By.XPATH, os.getenv('USER_PRO_PIC_PATH')).get_attribute("src").replace("_bigger", "")
                 # print('user_pro_pic:',user_pro_pic)
-                user_profile_url = comment.find_element(By.XPATH, os.getenv('USER_PROFILE_URL_PATH')).get_attribute("href")
+            user_profile_url = comment.find_element(By.XPATH, os.getenv('USER_PROFILE_URL_PATH')).get_attribute("href")
                 # print('user_profile_url',user_profile_url)
 
-                try:
-                    comment_text = comment.find_element(By.XPATH, os.getenv('COMMENT_TEXT_PATH')).text
+            try:
+                comment_text = comment.find_element(By.XPATH, os.getenv('COMMENT_TEXT_PATH')).text
                     # print('comment_text',comment_text)
-                except Exception as e:
-                    print(f"Error retrieving comment text:")
-                    comment_text = ""
-                comment_time = timeChange(comment.find_element(By.XPATH, os.getenv('COMMENT_TIME_PATH')).get_attribute("datetime"))
+            except Exception as e:
+                print(f"Error retrieving comment text:")
+                comment_text = ""
+            comment_time = timeChange(comment.find_element(By.XPATH, os.getenv('COMMENT_TIME_PATH')).get_attribute("datetime"))
                 # print('comment_time',comment_time)
                 # try:
                 #     no_com_rep = comment.find_element(By.XPATH, os.getenv('NO_COM_REP_PATH')).text
@@ -183,98 +244,141 @@ def extract_comments(browser,comments_for_scrap,total_comments):
                 # except Exception as e:
                 #     print(f"Error retrieving comment replies: {e}")
                 #     no_com_rep = 0
-                comments_replies_list = []
-                # print('comments_replies_list',comments_replies_list)
-                comments_for_scrap.append(Comment(user_pro_pic, comment_time, user_name, user_profile_url, comment_text, comments_replies_list))
-                # print('Comments',comments)
+            comments_replies_list = []
+            
+            try:
+                no_com_rep = parse_number_with_suffix(comment.find_element(By.XPATH, os.getenv('COMMENT_REPLY_COUNT')).text)
+                extract_replies(browser, no_com_rep, reply_link, comments_replies_list,visited_reply_links)
+
             except Exception as e:
-                print(f"Error processing comment link: {e}")
-    browser.implicitly_wait(5)
+                # print(f"Error retrieving comment replies: {e}")
+                no_com_rep = 0
+                print('no_com_rep',no_com_rep)
+            
+
+            
+                # print('comments_replies_list',comments_replies_list)
+            comments_for_scrap.append(Comment(user_pro_pic, comment_time, user_name, user_profile_url, comment_text, comments_replies_list))
+            # print('Comments',comments_for_scrap)
+        except Exception as e:
+            print(f"Error processing comment link: {e}")
+
+
+def extract_replies(browser, no_com_rep, reply_url, comments_replies_list, visited_reply_links):
+    try:
+        # Store the original window handle
+        original_window = browser.current_window_handle
+        
+        # Open new tab
+        browser.execute_script(f"window.open('{reply_url}');")
+        browser.switch_to.window(browser.window_handles[-1])
+
+        loading_checker(browser)
+        
+        
+        print("Switched to reply tab:", browser.title)
+        try:
+            break_d = 0
+            last_height = browser.execute_script("return document.body.scrollHeight")
+            print('last_height:', last_height)
+            
+            for _ in range(0, int(no_com_rep)):
+                browser.implicitly_wait(.5)
+                loading_checker(browser)
+                comment_elements = browser.find_elements(By.XPATH, os.getenv('COMMENT_PATH'))
+                comment_elements = comment_elements[1:]
+                reply_data_taker(comments_replies_list, comment_elements, visited_reply_links)
+                click_show_more(browser)
+                
+                if 'comment_elements' in locals():
+                    if len(comment_elements) > 0:
+                        browser.execute_script("arguments[0].scrollIntoView(true);", comment_elements[-1])
+                        if last_height == browser.execute_script("return document.body.scrollHeight"):
+                            print('No more comments to scroll through.')
+                            break_d += 1
+                        else:
+                            print("last_height-Before:", last_height)
+                            last_height = browser.execute_script("return document.body.scrollHeight")
+                            print("last_height-After:", last_height)
+                    else:
+                        break_d += 1
+                        print('No comment elements found')
+                else:
+                    print('comment_elements is not defined')
+                    
+                if 'break_d' in locals() and break_d > 5:
+                    break
+        except Exception as e:
+            print(f"Error in extract_replies: {e}")
+            pass
+            
+        # Close only the reply tab
+        print("Closing reply tab")
+        browser.close()
+        
+        # Switch back to original tab
+        print('Switching back to original tab')
+        browser.switch_to.window(original_window)
+        print("Back to original tab:", browser.title)
+        
+    except Exception as e:
+        print(f"Error in extract_replies: {e}")
+        # Make sure we switch back to original window even if there's an error
+        try:
+            for handle in browser.window_handles:
+                if handle != original_window:
+                    browser.switch_to.window(handle)
+                    browser.close()
+            browser.switch_to.window(original_window)
+        except:
+            pass
+
+
+def remove_duplicate_comments(comments_replies_list):
     unique_comments = []
     seen = set()
-    for comment in comments_for_scrap:
+    print('comments_replies_list:',len(comments_replies_list))
+    for comment in comments_replies_list:
         comment_data = (comment.user_pro_pic, comment.comment_time, comment.user_name, comment.user_profile_url, comment.comment_text)
         if comment_data not in seen:
             unique_comments.append(comment)
             seen.add(comment_data)
-    return unique_comments
-
-    """Extract comments from the post."""
-    '''comment_links = []
-    comments = []
-
-    for _ in range(0, int(total_comments), 4):
-        click_show_more(browser)
+    comments_replies_list = unique_comments
+    print('comments_replies_list:',len(comments_replies_list))
+    
+def reply_data_taker(comments_replies_list, comment_elements,visited_reply_links):
+    for comment in comment_elements:
         try:
-            browser.execute_script("window.scrollTo(0,window.scrollY+400)")
-            time.sleep(1)
-        except Exception as e:
-            print(f"Error scrolling: {e}")
-
-        try:
-            comment_elements = browser.find_elements(By.XPATH, "//*/div[2]/div/div[3]/a")
-            for element in comment_elements:
-                comment_links.append(element.get_attribute("href"))
-        except Exception as e:
-            print(f"Error retrieving comment links: {e}")
-
-
-    comment_links = list(dict.fromkeys(comment_links))  # Remove duplicates
-    for link in comment_links[:2]:
-        if "x.com" not in link:
+            reply_link = comment.find_element(By.XPATH, os.getenv('REPLY_LINK_PATH')).get_attribute("href")
+            print('reply_link',reply_link)
+            if reply_link in visited_reply_links:
+                print('Already visited reply link:',reply_link)
+                continue
+            visited_reply_links.append(reply_link)
+        except:
             continue
+        
         try:
-            browser.get(link)
-            time.sleep(1)
-            user_name = browser.find_element(By.XPATH, "//div[@data-testid='cellInnerDiv'][2]//span[@class='css-1jxf684 r-dnmrzs r-1udh08x r-1udbk01 r-3s2u2q r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']").text
-            print('user_name',user_name)
-            user_pro_pic = browser.find_element(By.XPATH, "//div[@data-testid='cellInnerDiv'][2]//div[@class='css-175oi2r r-18u37iz']//img").get_attribute("src").replace("_bigger", "")
-            print('user_pro_pic',user_pro_pic)
-            user_profile_url = browser.find_element(By.XPATH, "(//*/a[@class='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1loqt21'])[3]").get_attribute("href")
-            print('user_profile_url',user_profile_url)
+            user_name = comment.find_element(By.XPATH, os.getenv('USER_NAME_PATH')).text
+            # print('reply_user_name:',user_name)
+            user_pro_pic = comment.find_element(By.XPATH, os.getenv('USER_PRO_PIC_PATH')).get_attribute("src").replace("_bigger", "")
+            # print('reply_user_pro_pic:',user_pro_pic)
+            user_profile_url = comment.find_element(By.XPATH, os.getenv('USER_PROFILE_URL_PATH')).get_attribute("href")
+            # print('reply_user_profile_url:',user_profile_url)
+
             try:
-                comment_text = browser.find_element(By.XPATH, "//*/div[@class='css-175oi2r r-1s2bzr4']/div").text
-                print('comment_text',comment_text)
+                comment_text = comment.find_element(By.XPATH, os.getenv('COMMENT_TEXT_PATH')).text
+                # print('reply_comment_text:',comment_text)
             except Exception as e:
-                print(f"Error retrieving comment text: {e}")
+                print(f"Error retrieving comment text:")
                 comment_text = ""
-            comment_time = timeChange(browser.find_element(By.XPATH, "(//time)[2]").get_attribute("datetime"))
-            print('comment_time',comment_time)
-            try:
-                no_com_rep = browser.find_element(By.XPATH, "//div[@data-testid='cellInnerDiv'][2]//div[@class='css-175oi2r r-18u37iz r-1h0z5md r-13awgt0'][1]//span[@class='css-1jxf684 r-1ttztb7 r-qvutc0 r-poiln3 r-n6v787 r-1cwl3u0 r-1k6nrdp r-n7gxbd']/span[@class='css-1jxf684 r-bcqeeo r-1ttztb7 r-qvutc0 r-poiln3']").text
-                print('no_com_rep',no_com_rep)
-            except Exception as e:
-                print(f"Error retrieving comment replies: {e}")
-                no_com_rep = 0
-            comments_replies_list = []
-            print('comments_replies_list',comments_replies_list)
-            comments.append(Comment(user_pro_pic, comment_time, user_name, user_profile_url, comment_text, comments_replies_list))
-            print('Comments',comments)
+            comment_time = timeChange(comment.find_element(By.XPATH, os.getenv('COMMENT_TIME_PATH')).get_attribute("datetime"))
+            # print('reply_comment_time:',comment_time)
+            comments_replies_list.append(Comment(user_pro_pic, comment_time, user_name, user_profile_url, comment_text, []))
+            # print('reply_comments_replies_list:',len(comments_replies_list))
         except Exception as e:
-            print(f"Error processing comment link {link}: {e}")
-    return comments'''
+            print(f"Error processing comment link: {e}")
 
-
-def extract_replies(browser, no_com_rep):
-    """Extract replies to a comment."""
-    comments_replies_list = []
-    if no_com_rep > 0:
-        click_show_more(browser)
-        rep_list = browser.find_elements(By.XPATH, "//div[@class='css-175oi2r' and @data-testid='cellInnerDiv']")
-
-        for repl in range(len(rep_list) - 3):
-            ixp = f"//div[@class='css-175oi2r' and @data-testid='cellInnerDiv'][{repl + 4}]"
-            try:
-                rep_user_name = browser.find_element(By.XPATH, ixp + "//span[contains(@class, 'css-1jxf684') and contains(@class, 'r-dnmrzs') and contains(@class, 'r-1udh08x') and contains(@class, 'r-1udbk01') and contains(@class, 'r-3s2u2q') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3')]/span[contains(@class, 'css-1jxf684') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3')]").text
-                rep_user_pro_pic = browser.find_element(By.XPATH, ixp + "//div[@class='css-175oi2r r-18u37iz']//img").get_attribute("src").replace("_bigger", "")
-                rep_user_profile_url = browser.find_element(By.XPATH, ixp + "//a[@class='css-175oi2r r-1wbh5a2 r-dnmrzs r-1ny4l3l r-1loqt21']").get_attribute("href")
-                rep_comment_text = browser.find_element(By.XPATH, ixp + "//div[contains(@class, 'css-146c3p1') and contains(@class, 'r-8akbws') and contains(@class, 'r-krxsd3') and contains(@class, 'r-dnmrzs') and contains(@class, 'r-1udh08x') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-37j5jr') and contains(@class, 'r-a023e6') and contains(@class, 'r-rjixqe') and contains(@class, 'r-16dba41') and contains(@class, 'r-bnwqim')]").text
-                rep_comment_time = timeChange(browser.find_element(By.XPATH, ixp + "//time").get_attribute("datetime"))
-                comments_replies_list.append(Comment(rep_user_pro_pic, rep_comment_time, rep_user_name, rep_user_profile_url, rep_comment_text, []))
-            except Exception as e:
-                print(f"Error processing reply:")
-
-    return comments_replies_list
 
 
 def read_source(file_path="source.json"):
@@ -282,7 +386,7 @@ def read_source(file_path="source.json"):
     try:
         with open(file_path, "r") as file:
             data = json.load(file)
-            print("Loaded JSON content.")
+            # print("Loaded JSON content.")
             return data
     except FileNotFoundError:
         print(f"Error: File '{file_path}' not found.")
@@ -338,7 +442,8 @@ def main():
         try:
             try:
                 scrap_data = post_scrap(xlink, browser)
-                # print('1',scrap_data)
+                print('1',scrap_data)
+                print(json.dumps(scrap_data.to_json()))
             except Exception as e:
                 print(f"Error scraping post: {e}")
                 print(scrap_data)
@@ -348,9 +453,8 @@ def main():
                 continue
             # print('2', scrap_data)
             file_name = f"{xlink.split('/')[-3]}_{xlink.split('/')[-1]}"
-            # print('4',file_name)
             with open(f"post_data/{file_name}.json", "w", encoding="utf-8", errors="replace") as json_file:
-                json_file.write(json.dumps(scrap_data.__dict__, ensure_ascii=False))
+                json_file.write(scrap_data.to_json())
             print(f"Scraped and saved post {file_name}")
         except Exception as e:
             print(f"Error processing link {xlink}: {e}")    
