@@ -1,5 +1,8 @@
+import os
 import time
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def login(browser, user_name, user_pass):
     login = browser.find_element(By.XPATH, "//*[contains(text(), 'Sign in')]")
@@ -20,6 +23,13 @@ def login(browser, user_name, user_pass):
     # input('ok')
     next.click()
 
+    try:
+        wait = WebDriverWait(browser, 5)
+        cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
+        return "Login with username Failed: " + str(cred_error.text)
+    except Exception as e:
+        pass
+
     time.sleep(5)
     # input('ok')
     passw = browser.find_element(By.CSS_SELECTOR, ".r-homxoj")
@@ -31,7 +41,29 @@ def login(browser, user_name, user_pass):
     # input('ok')
     logIn.click()
     # input('ok')
-    print("Login Successful")
+
+    try:
+        wait = WebDriverWait(browser, 5)
+        cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
+        return "Login with username and password Failed: " + str(cred_error.text)
+    except Exception as e:
+        pass
+
+    try:
+        sus = browser.find_element(By.XPATH, "//span[contains(@class, 'css-1jxf684') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3') and text()='Suspicious login prevented']")
+        return "Login with username and password Failed: " + str(sus.text)
+    except Exception as e:
+        pass
+
+    try:
+        wait = WebDriverWait(browser, 10)
+        wait.until(EC.presence_of_element_located((
+            By.XPATH, '//*[@id="react-root"]/div/div/div[2]/header/div/div/div'
+        )))
+        return "Log in with credentials Successful"
+    except Exception as e:
+        return "Log in with credentials Failed: " + str(e)
+    
 
 def logout(browser):
     browser.find_element(

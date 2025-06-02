@@ -14,7 +14,7 @@ from parse_number import parse_number_with_suffix
 from timechange import timeChange
 load_dotenv()
 
-def load_cookies(driver: webdriver.Chrome):
+def load_cookies(driver):
         cookies_path="x_cookies.pkl"
         try:
             with open(cookies_path, "rb") as file:
@@ -419,11 +419,11 @@ def main():
     except Exception as e:
         print("Trying to Log In ")
         try:
-            login(
+            print(login(
                 browser,
                 "aleya98337",
                 "Test@123!",
-            )
+            ))
             browser.find_element(
                 By.XPATH, '//*[@id="react-root"]/div/div/div[2]/header/div/div/div'
             )
