@@ -28,43 +28,43 @@ class LoginFailedException(LoginException):
 
 def login(browser, user_name, user_pass):
     try:
-        login = browser.find_element(By.XPATH, "//*[contains(text(), 'Sign in')]")
+        wait = WebDriverWait(browser, 10)
+        login = wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'Sign in')]")))
         login.click()
-        print("Login in Twitter")
-        time.sleep(5)
+        # print("Login in Twitter")
 
-        user = browser.find_element(By.CSS_SELECTOR, ".r-30o5oe")
+        user = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".r-30o5oe")))
         user.send_keys(user_name)
 
-        next = browser.find_element(By.XPATH, "//span[text()='Next']")
+        next = wait.until(EC.presence_of_element_located((By.XPATH, "//span[text()='Next']")))
         next.click()
 
         try:
             wait = WebDriverWait(browser, 5)
             cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
-            print(str(cred_error.text))
+            # print(str(cred_error.text))
             "hello" + 123
         except Exception as e:
-            print("Username Exception type:", type(e).__name__)
+            # print("Username Exception type:", type(e).__name__)
             if type(e).__name__ == "TypeError":
                 raise UsernameException(str(cred_error.text))
             else:
                 pass
 
-        time.sleep(5)
-        passw = browser.find_element(By.CSS_SELECTOR, ".r-homxoj")
+        
+        passw = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".r-homxoj")))
         passw.send_keys(user_pass)
-        time.sleep(5)
-        logIn = browser.find_element(By.CSS_SELECTOR, ".r-19yznuf > div")
+        
+        logIn = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, ".r-19yznuf > div")))
         logIn.click()
 
         try:
             wait = WebDriverWait(browser, 5)
             cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
-            print(str(cred_error.text))
+            # print(str(cred_error.text))
             "hello" + 123
         except Exception as e:
-            print("Password Exception type:", type(e).__name__)
+            # print("Password Exception type:", type(e).__name__)
             if type(e).__name__ == "TypeError":
                 raise WrongPasswordException(str(cred_error.text))
             else:
@@ -74,7 +74,7 @@ def login(browser, user_name, user_pass):
             sus = browser.find_element(By.XPATH, "//span[contains(@class, 'css-1jxf684') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3') and text()='Suspicious login prevented']")
             "hello" + 123
         except Exception as e:
-            print("Suspicious login Exception type:", type(e).__name__)
+            # print("Suspicious login Exception type:", type(e).__name__)
             if type(e).__name__ == "TypeError":
                 raise SuspiciousLoginException(str(sus.text))
             else:
