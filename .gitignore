@@ -2,4 +2,5 @@
 .venv/
 post_data/
 *.pkl
-
+__pycache__/
+*.pyc
