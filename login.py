@@ -26,9 +26,14 @@ def login(browser, user_name, user_pass):
     try:
         wait = WebDriverWait(browser, 5)
         cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
-        return "Login with username Failed: " + str(cred_error.text)
+        print(str(cred_error.text))
+        "hello" + 123
     except Exception as e:
-        pass
+        print("Username Exception type:", type(e).__name__)
+        if type(e).__name__ == "TypeError":
+            raise Exception("Login with username Failed: " + str(cred_error.text))
+        else:
+            pass
 
     time.sleep(5)
     # input('ok')
@@ -45,15 +50,24 @@ def login(browser, user_name, user_pass):
     try:
         wait = WebDriverWait(browser, 5)
         cred_error = wait.until(EC.presence_of_element_located((By.XPATH, os.getenv('CREDENTIAL_ERROR_MESSAGE'))))
-        return "Login with username and password Failed: " + str(cred_error.text)
+        print(str(cred_error.text))
+        "hello" + 123
     except Exception as e:
-        pass
+        print("Password Exception type:", type(e).__name__)
+        if type(e).__name__ == "TypeError":
+            raise Exception("Login with username and password Failed: " + str(cred_error.text))
+        else:
+            pass
 
     try:
         sus = browser.find_element(By.XPATH, "//span[contains(@class, 'css-1jxf684') and contains(@class, 'r-bcqeeo') and contains(@class, 'r-1ttztb7') and contains(@class, 'r-qvutc0') and contains(@class, 'r-poiln3') and text()='Suspicious login prevented']")
-        return "Login with username and password Failed: " + str(sus.text)
+        "hello" + 123
     except Exception as e:
-        pass
+        print("Suspicious login Exception type:", type(e).__name__)
+        if type(e).__name__ == "TypeError":
+            raise Exception("Login with username and password Failed: " + str(sus.text))
+        else:
+            pass
 
     try:
         wait = WebDriverWait(browser, 10)
@@ -62,7 +76,7 @@ def login(browser, user_name, user_pass):
         )))
         return "Log in with credentials Successful"
     except Exception as e:
-        return "Log in with credentials Failed: " + str(e)
+        raise Exception("Log in with credentials Failed: " + str(e))
     
 
 def logout(browser):

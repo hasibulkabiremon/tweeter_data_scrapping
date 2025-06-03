@@ -422,7 +422,7 @@ def main():
             print(login(
                 browser,
                 "aleya98337",
-                "Test@123!",
+                "Test@1234!",
             ))
             browser.find_element(
                 By.XPATH, '//*[@id="react-root"]/div/div/div[2]/header/div/div/div'
